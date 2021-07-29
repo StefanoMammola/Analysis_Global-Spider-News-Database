@@ -8,6 +8,9 @@ Mammola S., et al. An expert-curated global database of online newspaper article
 Repository contains:
 
 ~Data_spider_news_global: The database used for the analysis, as deposited in Figshare (doi:10.6084/m9.figshare.14822301). See Figshare entry for metadata.
+
 ~Data_spider_news_global_BeforeValidation: The same database as Data_spider_news_global, but before the quality check. Needed to calculate Cohen's kappa.
-~Danger_symbol: Silhouette used in Figure 3.
+
+~Danger_symbol: Silhouette (.png) used in Figure 3.
+
 ~Analysis_Data_spider_news_global: R code to generate the analysis.
