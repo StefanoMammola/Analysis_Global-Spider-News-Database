@@ -174,7 +174,6 @@ median(db[db$TypeEvent == "Encounter",]$lat, na.rm = TRUE) ; std(db[db$TypeEvent
 median(db[db$TypeEvent == "Bite",]$lat, na.rm = TRUE) ; std(db[db$TypeEvent == "Bite",]$lat)
 median(db[db$TypeEvent == "Deadly bite",]$lat, na.rm = TRUE) ; std(db[db$TypeEvent == "Deadly bite",]$lat)
 
-
 ###############################################################
 
 ## Data visualization:
@@ -365,16 +364,20 @@ Bar_plot_family$Family_2 <- factor(Bar_plot_family$Family_2,levels = renamed_Vec
 Bar_plot_family <- Bar_plot_family %>% group_by(Family_2) %>% summarise(N = sum(N))
 
 # Preparing dataset of genuses
-Bar_plot_genus <- data.frame(sort(table(db$Genus))) ; colnames(Bar_plot_genus) <- c("Genus","N")
+db_bar <- db[db$Genus != "Unknown",]
+
+Bar_plot_genus <- data.frame(sort(table(db_bar$Genus))) ; colnames(Bar_plot_genus) <- c("Genus","N")
 
 #Summarize family with less than 20 occurrence ina new category (others)
 Vector <- as.character(Bar_plot_genus$Genus) ; Gen_to_rename <- sum(ifelse(Bar_plot_genus$N>20,0,1))
 
-renamed_Vector <- c(rep( paste("Others (n= ",Gen_to_rename,")",sep=''), Gen_to_rename), 
+renamed_Vector <- c(rep( paste("Others (n= ", Gen_to_rename,")",sep=''), Gen_to_rename), 
                     Vector[c(Gen_to_rename+1) : nrow(Bar_plot_genus)]) 
 
+#renamed_Vector[94] <- paste("Others (n= ", Gen_to_rename,")",sep='')
+
 Bar_plot_genus <- data.frame(Bar_plot_genus, Genus_2 = as.factor(renamed_Vector))
-Bar_plot_genus$Genus_2 <- factor(Bar_plot_genus$Genus_2,levels = renamed_Vector[Gen_to_rename : nrow(Bar_plot_genus)]) ; rm(Vector,Gen_to_rename,renamed_Vector)
+Bar_plot_genus$Genus_2 <- factor(Bar_plot_genus$Genus_2,levels = renamed_Vector[Gen_to_rename : nrow(Bar_plot_genus)]) ; rm(Vector,Gen_to_rename,renamed_Vector,db_bar)
 Bar_plot_genus <- Bar_plot_genus %>% group_by(Genus_2) %>% summarise(N = sum(N))
 
 # Panel c
@@ -464,7 +467,7 @@ bar_1 <- data.frame(table(db$TotalExpert,db$Continent))
             position = position_dodge(0.9), size=3.5)+
   
   scale_fill_manual("",labels=c("No", "Yes"),values=c("grey10", "turquoise3"))+
-  labs(title="(a)", subtitle =  "Frequency of expert consultation (any)",x=NULL, y = "Frequency")+
+  labs(title="(a)", subtitle =  "Expert consultation (any)",x=NULL, y = "Count")+
   theme_niwot()+
   theme(legend.position = c(0.15, 0.8)))
 
@@ -478,7 +481,7 @@ bar_2 <- data.frame(table(db$Expert_arachnologist,db$Continent))
               position = position_dodge(0.9), size=3.5)+
     
     scale_fill_manual("",labels=c("No", "Yes"),values=c("grey10", "turquoise3"))+
-    labs(title="(b)", subtitle =  "Frequency of spider expert consultation",x=NULL, y = "Frequency")+
+    labs(title="(b)", subtitle =  "Spider expert consultation",x=NULL, y = NULL)+
     theme_niwot()+
     theme(legend.position ="none"))
 
@@ -492,7 +495,7 @@ bar_3 <- data.frame(table(ifelse(db$TotalError>0,1,0),db$Continent))
               position = position_dodge(0.9), size=3.5)+
     
     scale_fill_manual("",labels=c("No", "Yes"),values=c("grey10", "turquoise3"))+
-    labs(title="(c)", subtitle =  "Presence of errors (any)",x=NULL, y = "Frequency")+
+    labs(title="(c)", subtitle =  "Presence of errors (any)",x=NULL, y = "Count")+
     theme_niwot()+
     theme(legend.position ="none"))
 
@@ -506,7 +509,7 @@ bar_4 <- data.frame(table(db$Sensationalism,db$Continent))
             position = position_dodge(0.9), size=3.5)+
   
   scale_fill_manual("",labels=c("No", "Yes"),values=c("grey10", "turquoise3"))+
-  labs(title="(d)", subtitle =  "Sensationalistic content",x=NULL, y = "Frequency")+
+  labs(title="(d)", subtitle =  "Sensationalistic content",x=NULL, y = NULL)+
   theme_niwot()+
   theme(legend.position = "none"))
 
@@ -534,7 +537,7 @@ dev.off()
 # Wordcloud (Figure 5) ----------------------------------------------------
 
 #Extracting english news
-db_english <- db[db$Lenguage == "English",]
+db_english <- db[db$Language == "English",]
 
 #taking distinct titles
 db_english_unique <- distinct(db_english, Title, .keep_all = TRUE) 
@@ -582,35 +585,34 @@ Title_sensationalistic <- db_english_unique[db_english_unique$Sensationalism == 
   count(title_word, sort = TRUE) 
 
 #Setting colors
-color_sens <- c("black", 
-          "darkred",
-          rep("black",6), #mum
-          rep("darkorange",2),
-          "black",
-          "darkred", #horror
-          "black",
-          "darkred",
-          "black",
-          "darkred",
-          "darkorange", #poisonous
-          rep("black",7),
-          "darkred", #terrifying
-          rep("black",7),
-          "darkred",#terrified
-          "black",
-          "darkred",
-          "darkorange",
-          "darkred",
-          rep("black",2),
-          "darkred",#hundreds
-          rep("black",4),
-          "darkred",
-          "black",
-          "darkorange",
-          rep("black",13)
-          )
+color_sens <- c( 
+  "black",          
+  "darkred",
+  rep("black",6), #mum
+  rep("darkorange",2),
+  "black",
+  "darkred", #horror
+  rep("black",3),
+  "darkred",#flesh
+  rep("black",8),
+  "darkred", #terrifying
+  rep("black",7),
+  "darkred",#massive
+  "darkred",
+  "black",
+  "darkorange",
+  "black",
+  "darkorange",#invasion
+  rep("black",3),
+  "darkred", #hundreds
+  "darkorange",
+  rep("black",14),
+  "darkred",
+  "black","black"
+)
 
 dev.off()
+
 (wordcloud1 <- Title_sensationalistic[1:60,] %>% with(wordcloud(words = title_word, 
                                          freq = n, 
                                          max.words = 60,
@@ -632,17 +634,17 @@ Title_non <- db_english_unique[db_english_unique$Sensationalism == 0,] %>%
   count(title_word, sort = TRUE) 
 
 #Setting colors
-color_non <- c(rep("black",11),
+color_non <- c(rep("black",10),
                "darkorange",#deadly
-               rep("black",10),
+               rep("black",12),
                "darkred", #giant 
-               rep("black",2),
-               "darkorange", #kill
-               rep("black",7),
+               rep("black",6),
                "darkred",#flesh
-               rep("black",16),
-               "darkorange",#kills
-               rep("black",9)
+               "darkorange", #kill
+               rep("black",15),
+               "darkred",#kills
+               rep("black",12)
+            
                )
 
 dev.off() 
