@@ -15,6 +15,8 @@ Repository contains ----------------------
 
 ~Analysis_Data_spider_news_global: R code to generate the analysis.
 
+~Data_spider_news_global_AfterValidation (.csv): The same database as Data_spider_news_global, but after the quality check. Needed to calculate Cohen's kappa.
+
 ~Data_spider_news_global_BeforeValidation (.csv): The same database as Data_spider_news_global, but before the quality check. Needed to calculate Cohen's kappa.
 
 ~Danger_symbol: Silhouette (.png) used in Figure 3.
