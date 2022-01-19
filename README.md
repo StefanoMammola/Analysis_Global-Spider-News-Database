@@ -4,7 +4,7 @@ R code to generate the analyses about global representation of spiders in the on
 
 Full details on the analysis are in:
 
-Mammola S., et al. An expert-curated global database of online newspaper articles on spiders and spider bites. Scientific Data (submitted).
+Mammola S., et al. (2022) An expert-curated global database of online newspaper articles on spiders and spider bites. Scientific Data (submitted).
 
 Data -------------------------------------
 
