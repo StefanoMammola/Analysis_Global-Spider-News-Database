@@ -10,7 +10,7 @@
 ## ------------------------------------------------------------------------
 
 ## Authors: Stefano Mammola
-## Last update: 29 Jul 2021, Helsinki, Finland
+## Last update: 19 Jan 2022, Torino, Italy
 ## Software: R (v. R 4.1.0) and R studio (v. 1.4.1103)
 
 ###############################################################
@@ -281,9 +281,9 @@ world <- map_data("world")
              color = "gray50", fill = "gray95", size = 0.3) +
     geom_point(data = db_unique_event %>% drop_na(TypeEvent), 
                aes(x = lon, y = lat,colour=as.factor(TypeEvent)),
-               alpha = 0.8, size = 1,
+               alpha = 0.8, size = 1.5,
                shape = 16)+
-  ylim(-50,75)+
+  ylim(-50,80)+
   labs(title = "(a)", fill = "Type of event: ", y = "Latitude [°]") +
   scale_colour_manual(values = c("turquoise3", "orangered", "grey10")) +
   theme_bw() +
@@ -318,7 +318,7 @@ world <- map_data("world")
     geom_point(aes(y = lat, color = TypeEvent), 
     position = position_jitter(width = 0.15), size = 1, alpha = 0.2) +
     geom_boxplot(width = 0.2, outlier.shape = NA, alpha = 0.4) +
-    ylim(-50,75)+
+    ylim(-50,80)+
     labs(title = "(b)", x = NULL) +
     guides(fill = FALSE, color = FALSE) +
     scale_fill_manual(values =  c("turquoise3", "orangered", "grey10")) +
@@ -350,8 +350,10 @@ world <- map_data("world")
 
 # Distribution of news by family and genuses
 
+db_bar <- db[db$Family != "Unknown",]
+
 # Preparing dataset of Families 
-Bar_plot_family <- data.frame(sort(table(db$Family))) ; colnames(Bar_plot_family) <- c("Family","N")
+Bar_plot_family <- data.frame(sort(table(db_bar$Family))) ; colnames(Bar_plot_family) <- c("Family","N")
 
 #Summarize family with less thab 50 occurrence ina new category (others)
 Vector <- as.character(Bar_plot_family$Family) ; Fam_to_rename <- sum(ifelse(Bar_plot_family$N>50,0,1))
@@ -443,7 +445,7 @@ for (i in 1:length(grobs)){
   grobs[[i]]$widths[2:5] <- as.list(maxwidth)
 }
 
-pdf("Figure_3.pdf", width = 18, height = 10)
+pdf("Figure_3.pdf", width = 20, height = 10)
 
 do.call("grid.arrange", c(grobs, nrow = 2, ncol = 2))
 
@@ -668,27 +670,26 @@ nrow(db_english_unique[db_english_unique$Sensationalism == 0,]) #sample size
 
 ###############################################################
 
-# Percentager of reassessed news
+# Percentage of reassessed news
 
 #English
-nrow(db[db$Quality_check == "yes" & db$Lenguage == "English",])/nrow(db[db$Lenguage == "English",])
+nrow(db[db$Quality_check == "yes" & db$Language == "English",])/nrow(db[db$Language == "English",])
 #French
-nrow(db[db$Quality_check == "yes" & db$Lenguage == "French",])/nrow(db[db$Lenguage == "French",])
+nrow(db[db$Quality_check == "yes" & db$Language == "French",])/nrow(db[db$Language == "French",])
 #Italian
-nrow(db[db$Quality_check == "yes" & db$Lenguage == "Italian",])/nrow(db[db$Lenguage == "Italian",])
+nrow(db[db$Quality_check == "yes" & db$Language == "Italian",])/nrow(db[db$Language == "Italian",])
 #Spanish
-nrow(db[db$Quality_check == "yes" & db$Lenguage == "Spanish",])/nrow(db[db$Lenguage == "Spanish",])
+nrow(db[db$Quality_check == "yes" & db$Language == "Spanish",])/nrow(db[db$Language == "Spanish",])
 
 # Cohen's kappa analysis for calculating the correlation of two raters
 
-# Loading the Database pre validation ----------------------------------------
+# Loading the Database pre & post validation ----------------------------------------
 
+db1 <- read.csv(file = "Data_spider_news_AfterValidation.csv", sep = '\t', dec = '.', header = TRUE, as.is = FALSE)
 db2 <- read.csv(file = "Data_spider_news_BeforeValidation.csv", sep = '\t', dec = '.', header = TRUE, as.is = FALSE)
 
+db1 <- db1[db1$Quality_check == "yes" & db1$Language == "English",] ; db1$Code <- droplevels(db1$Code)
 db2 <- db2[db2$Lenguage == "English",] ; db2$Code <- droplevels(db2$Code)
-
-# Extracting validated news
-db1 <- db[db$Quality_check == "yes" & db$Lenguage == "English",] ; db1$Code <- droplevels(db1$Code)
 
 # Match
 db2 <- db2[db2$Code %in% db1$Code,]
