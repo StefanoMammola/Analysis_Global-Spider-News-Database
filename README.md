@@ -8,7 +8,7 @@ Mammola S., et al. (2022) An expert-curated global database of online newspaper 
 
 Data -------------------------------------
 
-To run the analysis, one should download from figshare the database ~Data_spider_news_global.csv (doi:10.6084/m9.figshare.14822301). See Figshare entry for metadata
+To run the analysis, one should download from figshare the database ~Data_spider_news_global.csv (DOI: 10.6084/m9.figshare.14822301). See Figshare entry for metadata
 
 
 Repository contains ----------------------
